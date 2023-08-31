@@ -1,5 +1,5 @@
 
-macro(CMakeExecuteGit prfx)
+macro(CMakeExecuteCommand prfx)
     
     if(NOT DEFINED ${prfx}_unset)
         foreach(__var ${${prfx}_unset})
