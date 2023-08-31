@@ -1,15 +1,17 @@
 
 macro(CMakeExecuteGit prfx)
-    cmake_parse_arguments( ${prfx} "ASSERT;CLEAR" "DIR" "COMMANDS" ${ARGN})
-    set(${prfx}_unset)
-    foreach(__var ${${prfx}_unset})
-        unset(${__var})
-    endforeach()
-    unset(__var)
-    if(${prfx}_CLEAR)
-
-    else()
-        set(${prfx}_unset ${prfx}_COMMANDS ${prfx}_DIR ${prfx}_RESULT_VARIABLE ${prfx}_OUTPUT_ERROR_VARIABLE ${prfx}_ERROR_VARIABLE)
+    
+    if(NOT DEFINED ${prfx}_unset)
+        foreach(__var ${${prfx}_unset})
+            unset(${__var})
+        endforeach()
+        unset(__var)
+        unset(${prfx}_unset)
+    endif()
+    
+    cmake_parse_arguments( ${prfx} "VERBOSE;ASSERT;CLEAR" "DIR" "COMMANDS" ${ARGN})
+    if(NOT ${${prfx}_CLEAR})
+        list(APPEND ${prfx}_unset ${prfx}_COMMANDS ${prfx}_ASSERT ${prfx}_CLEAR ${prfx}_VERBOSE ${prfx}_DIR ${prfx}_RESULT_VARIABLE ${prfx}_OUTPUT_ERROR_VARIABLE ${prfx}_ERROR_VARIABLE)
         execute_process(
             COMMAND ${${prfx}_COMMANDS} 
             WORKING_DIRECTORY "${${prfx}_DIR}" 
@@ -41,5 +43,8 @@ macro(CMakeExecuteGit prfx)
             message(${msg})
         endif()
     endif()
+    
+    
+    
 endmacro()
 
