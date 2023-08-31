@@ -14,10 +14,10 @@ set(__repo_uri uri_of_repo)
 set(__repo_remote origin)
 set(__repo_tag tag)
 
-CMakeExecuteGit(${__prefix} COMMANDS git init DIR ${__dest} ${__verbose_option} ASSERT) 
-CMakeExecuteGit(${__prefix} COMMANDS git remote add origin ${__repo_uri} DIR ${__dest} ${__verbose_option})
-CMakeExecuteGit(${__prefix} COMMANDS git fetch ${__repo_remote} --tags ${__repo_tag} --depth=1 DIR ${__dest} ${__verbose_option} ASSERT)
-CMakeExecuteGit(${__prefix} COMMANDS git checkout tags/${__repo_tag} DIR ${__dest} ${__verbose_option} ASSERT)
+CMakeExecuteGit(${__prefix} COMMAND git init DIR ${__dest} ${__verbose_option} ASSERT) 
+CMakeExecuteGit(${__prefix} COMMAND git remote add origin ${__repo_uri} DIR ${__dest} ${__verbose_option})
+CMakeExecuteGit(${__prefix} COMMAND git fetch ${__repo_remote} --tags ${__repo_tag} --depth=1 DIR ${__dest} ${__verbose_option} ASSERT)
+CMakeExecuteGit(${__prefix} COMMAND git checkout tags/${__repo_tag} DIR ${__dest} ${__verbose_option} ASSERT)
 message(${${__prefix}_RESULT_VALUE}) # return value from git
 CMakeExecuteGit(${__prefix} CLEAR) # clear internal variable
 ```
