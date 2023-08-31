@@ -1,6 +1,6 @@
 
 macro(CMakeExecuteGit prfx)
-    cmake_parse_arguments( ${prfx} "CLEAR;VERBOSE;VERBOSE_ERROR" "DIR" "COMMANDS" ${ARGN})
+    cmake_parse_arguments( ${prfx} "ASSERT;CLEAR" "DIR" "COMMANDS" ${ARGN})
     set(${prfx}_unset)
     foreach(__var ${${prfx}_unset})
         unset(${__var})
@@ -17,12 +17,28 @@ macro(CMakeExecuteGit prfx)
             OUTPUT_VARIABLE ${prfx}_OUTPUT_VARIABLE
             ERROR_VARIABLE ${prfx}_ERROR_VARIABLE
         )
-        if(${prfx}_VERBOSE_ERROR AND NOT ${prfx}_ERROR_VARIABLE STREQUAL "")
-            message(${${prfx}_ERROR_VARIABLE})
+        
+        macro(CMakeExecuteGitstringMessage msg)
+            string(APPEND ${msg} "[EXIT CODE] : ${${prfx}_RESULT_VARIABLE}\n")
+            if(NOT ${${prfx}_OUTPUT_VARIABLE} STREQUAL "")
+                string(APPEND ${msg} "[OUTPUT_VARIABLE] : \n")
+                string(APPEND ${msg} ${${prfx}_OUTPUT_VARIABLE})
+            endif()
+            if(NOT ${${prfx}_ERROR_VARIABLE} STREQUAL "")
+                string(APPEND ${msg} "[ERROR_VARIABLE] : \n")
+                string(APPEND ${msg} ${${prfx}_ERROR_VARIABLE})
+            endif()
+        endmacro()
+            
+        
+        if( (${${prfx}_ASSERT} AND (NOT ${${prfx}_RESULT_VARIABLE} EQUAL 0)))
+            CMakeExecuteGitstringMessage(msg)
+            message(FATAL_ERROR ${msg})
         endif()
-
-        if(${prfx}_VERBOSE AND NOT ${prfx}_OUTPUT_VARIABLE STREQUAL "")
-            message(${${prfx}_OUTPUT_VARIABLE})
+        
+        if(${${prfx}_VERBOSE})
+            CMakeExecuteGitstringMessage(msg)
+            message(${msg})
         endif()
     endif()
 endmacro()
