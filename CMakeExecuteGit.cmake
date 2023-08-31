@@ -9,11 +9,11 @@ macro(CMakeExecuteGit prfx)
         unset(${prfx}_unset)
     endif()
     
-    cmake_parse_arguments( ${prfx} "VERBOSE;ASSERT;CLEAR" "DIR" "COMMANDS" ${ARGN})
+    cmake_parse_arguments( ${prfx} "VERBOSE;ASSERT;CLEAR" "DIR" "COMMAND" ${ARGN})
     if(NOT ${${prfx}_CLEAR})
-        list(APPEND ${prfx}_unset ${prfx}_COMMANDS ${prfx}_ASSERT ${prfx}_CLEAR ${prfx}_VERBOSE ${prfx}_DIR ${prfx}_RESULT_VARIABLE ${prfx}_OUTPUT_ERROR_VARIABLE ${prfx}_ERROR_VARIABLE)
+        list(APPEND ${prfx}_unset ${prfx}_COMMAND ${prfx}_ASSERT ${prfx}_CLEAR ${prfx}_VERBOSE ${prfx}_DIR ${prfx}_RESULT_VARIABLE ${prfx}_OUTPUT_ERROR_VARIABLE ${prfx}_ERROR_VARIABLE)
         execute_process(
-            COMMAND ${${prfx}_COMMANDS} 
+            COMMAND ${${prfx}_COMMAND} 
             WORKING_DIRECTORY "${${prfx}_DIR}" 
             RESULT_VARIABLE ${prfx}_RESULT_VARIABLE
             OUTPUT_VARIABLE ${prfx}_OUTPUT_VARIABLE
