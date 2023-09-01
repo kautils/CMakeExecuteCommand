@@ -20,31 +20,36 @@ macro(CMakeExecuteCommand prfx)
             ERROR_VARIABLE ${prfx}_ERROR_VARIABLE
         )
         
-        macro(CMakeExecuteGitstringMessage msg)
-            string(APPEND ${msg} "[EXIT CODE] : ${${prfx}_RESULT_VARIABLE}\n")
+        macro(CMakeExecuteGitstringMessage __msg)
+            string(APPEND ${__msg} "[EXIT CODE] : ${${prfx}_RESULT_VARIABLE}\n")
+            
+            string(APPEND ${__msg} "[COMMAND] : ")
+            foreach(__com ${${prfx}_COMMAND})
+                string(APPEND ${__msg} "${__com} ")
+            endforeach()
             if(NOT ${${prfx}_OUTPUT_VARIABLE} STREQUAL "")
-                string(APPEND ${msg} "[OUTPUT_VARIABLE] : \n")
-                string(APPEND ${msg} ${${prfx}_OUTPUT_VARIABLE})
+                string(APPEND ${__msg} "[OUTPUT_VARIABLE] : \n")
+                string(APPEND ${__msg} ${${prfx}_OUTPUT_VARIABLE})
             endif()
             if(NOT ${${prfx}_ERROR_VARIABLE} STREQUAL "")
-                string(APPEND ${msg} "[ERROR_VARIABLE] : \n")
-                string(APPEND ${msg} ${${prfx}_ERROR_VARIABLE})
+                string(APPEND ${__msg} "[ERROR_VARIABLE] : \n")
+                string(APPEND ${__msg} ${${prfx}_ERROR_VARIABLE})
             endif()
         endmacro()
             
         
         if( (${${prfx}_ASSERT} AND (NOT ${${prfx}_RESULT_VARIABLE} EQUAL 0)))
-            CMakeExecuteGitstringMessage(msg)
-            message(FATAL_ERROR ${msg})
+            CMakeExecuteGitstringMessage(__msg)
+            message(FATAL_ERROR ${__msg})
         endif()
         
         if(${${prfx}_VERBOSE})
-            CMakeExecuteGitstringMessage(msg)
-            message(${msg})
+            CMakeExecuteGitstringMessage(__msg)
+            message(${__msg})
         endif()
     endif()
     
-    
+    unset(__msg)
     
 endmacro()
 
